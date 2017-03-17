@@ -2,7 +2,7 @@
 
 An example Certificate Authority.  ONLY USEFUL FOR TESTING.  YOU HAVE BEEN WARNED.
 
-Loosely based on [[https://jamielinux.com/docs/openssl-certificate-authority/index.html]].
+Loosely based on https://jamielinux.com/docs/openssl-certificate-authority/index.html.
 
 ## Usage ##
 
