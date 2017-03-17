@@ -1,0 +1,74 @@
+dir = .
+
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+# Directory and file locations.
+serial = $dir/serial
+database = $dir/index.txt
+certs = $dir/certs
+new_certs_dir = $dir/certs
+
+# The root key and root certificate.
+private_key = $dir/private/ca.key.pem
+certificate  = $dir/certs/ca.cert.pem
+
+# RIP SHA-1.
+default_md  = sha256
+
+default_days = 36500
+nameopt = ca_default
+certopt = ca_default
+preserve = no
+email_in_dn  = no
+policy = policy_demo
+
+[ policy_demo ]
+commonName = supplied
+countryName = optional
+stateOrProvinceName = optional
+organizationName = optional
+organizationalUnitName = optional
+emailAddress = optional
+
+[ req ]
+default_bits = 2048
+distinguished_name = req_distinguished_name
+string_mask = utf8only
+
+# RIP SHA-1.
+default_md = sha256
+x509_extensions = v3_ca
+
+[ req_distinguished_name ]
+countryName                     = Country Name (2 letter code)
+countryName_default             = US
+stateOrProvinceName             = State or Province Name
+stateOrProvinceName_default     = CA
+localityName                    = Locality Name
+localityName_default            = Carville-by-the-Sea
+0.organizationName              = Organization Name
+0.organizationName_default      = Buoyant, Inc.
+commonName                      = Common Name
+commonName_default              = Playground CA
+
+[ v3_ca ]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:0
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+
+[ v3_req ]
+basicConstraints = CA:FALSE
+subjectKeyIdentifier = hash
+
+[ server_cert ]
+# Extensions for server certificates (`man x509v3_config`).
+basicConstraints = CA:FALSE
+nsCertType = server
+nsComment = "I have no idea what I'm doing."
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
