@@ -32,26 +32,33 @@ openssl pkcs8 -topk8 -nocrypt \
   -in "${privkey}.pem" \
   -out "${privkey}.p8"
 
-openssl pkcs12 -export -nodes \
-  -passout pass: \
-  -in "${cert}.pem" \
-  -inkey "${privkey}.pem" \
-  -certfile "certs/ca.cert.pem" \
-  -out "${privkey}.p12"
+openssl rsa -outform DER \
+  -in "${privkey}.pem" \
+  -out "${privkey}.der"
 
-openssl pkcs12 -info -nokeys \
-  -passin pass: \
-  -in "${privkey}.p12"
+openssl rsa -check -inform DER \
+  -in "${privkey}.der"
 
-openssl pkcs12 -export -nokeys -nodes \
-  -passin pass: \
-  -passout pass: \
-  -in "${cert}.pem" \
-  -inkey "${privkey}.pem" \
-  -certfile "certs/ca.cert.pem" \
-  -out "${cert}.p12"
+# openssl pkcs12 -export -nodes \
+#   -passout pass: \
+#   -in "${cert}.pem" \
+#   -inkey "${privkey}.pem" \
+#   -certfile "certs/ca.cert.pem" \
+#   -out "${privkey}.p12"
 
-openssl pkcs12 -info \
-  -passin "pass:" \
-  -in "${cert}.p12"
+# openssl pkcs12 -info -nokeys \
+#   -passin pass: \
+#   -in "${privkey}.p12"
+
+# openssl pkcs12 -export -nokeys -nodes \
+#   -passin pass: \
+#   -passout pass: \
+#   -in "${cert}.pem" \
+#   -inkey "${privkey}.pem" \
+#   -certfile "certs/ca.cert.pem" \
+#   -out "${cert}.p12"
+
+# openssl pkcs12 -info \
+#   -passin "pass:" \
+#   -in "${cert}.p12"
 
