@@ -8,57 +8,30 @@ if [ -z "$1" ]; then
 fi
 svc="$1"
 
-privkey="private/${svc}"
-cert="certs/${svc}.cert"
-csr="csr/${svc}.csr"
+privkey="ca/intermediate/private/${svc}.key"
+csr="ca/intermediate/csr/${svc}.csr"
+cert="ca/intermediate/certs/${svc}.cert"
+cachain_pem="ca/intermediate/certs/ca-chain.cert.pem"
 
 openssl genrsa -out "${privkey}.pem" 2048
+chmod 400 "${privkey}.pem"
 
-openssl req -config openssl.cnf \
-  -new -subj "/C=US/CN=${svc}" \
-  -key "${privkey}.pem" \
-  -out "${csr}.pem"
+openssl req -config ca/intermediate/openssl.cnf \
+    -new -subj "/C=US/CN=${svc}" \
+    -key "${privkey}.pem" \
+    -out "${csr}.pem"
 
-openssl ca -config openssl.cnf -batch \
-  -extensions server_cert -days 375 -notext -md sha256 \
-  -in "${csr}.pem" \
-  -out "${cert}.pem"
+openssl ca -config ca/intermediate/openssl.cnf -batch \
+    -extensions server_cert -days 375 -notext -md sha256 \
+    -in "${csr}.pem" \
+    -out "${cert}.pem"
 
 openssl x509 -noout -text -in "${cert}.pem"
 
-openssl verify -CAfile certs/ca.cert.pem "${cert}.pem"
+openssl verify -CAfile "$cachain_pem" "${cert}.pem"
 
-openssl pkcs8 -topk8 -nocrypt \
-  -in "${privkey}.pem" \
-  -out "${privkey}.p8"
-
-openssl rsa -outform DER \
-  -in "${privkey}.pem" \
-  -out "${privkey}.der"
-
-openssl rsa -check -inform DER \
-  -in "${privkey}.der"
-
-# openssl pkcs12 -export -nodes \
-#   -passout pass: \
-#   -in "${cert}.pem" \
-#   -inkey "${privkey}.pem" \
-#   -certfile "certs/ca.cert.pem" \
-#   -out "${privkey}.p12"
-
-# openssl pkcs12 -info -nokeys \
-#   -passin pass: \
-#   -in "${privkey}.p12"
-
-# openssl pkcs12 -export -nokeys -nodes \
-#   -passin pass: \
-#   -passout pass: \
-#   -in "${cert}.pem" \
-#   -inkey "${privkey}.pem" \
-#   -certfile "certs/ca.cert.pem" \
-#   -out "${cert}.p12"
-
-# openssl pkcs12 -info \
-#   -passin "pass:" \
-#   -in "${cert}.p12"
-
+rm -rf "${svc}.tls/"
+mkdir -p "${svc}.tls/"
+cp -p "$cachain_pem" "${svc}.tls/"
+cp -p "${privkey}.pem" "${svc}.tls/private.pem"
+cp -p "${cert}.pem" "${svc}.tls/cert.pem"

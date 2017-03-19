@@ -2,18 +2,15 @@
 
 An example Certificate Authority.  ONLY USEFUL FOR TESTING.  YOU HAVE BEEN WARNED.
 
-Loosely based on https://jamielinux.com/docs/openssl-certificate-authority/index.html.
+Based on https://jamielinux.com/docs/openssl-certificate-authority/.
 
 ## Usage ##
 
 ```sh
-:; ./initca.sh
-:; ./mksvc.sh buoyant.io
-:; ls -1 **/buoyant.io*
-certs/buoyant.io.cert.p12
-certs/buoyant.io.cert.pem
-csr/buoyant.io.csr.pem
-private/buoyant.io.p12
-private/buoyant.io.p8
-private/buoyant.io.pem
+:; ./init.sh >/dev/null 2>&1
+:; ./mksvc.sh test.olix0r.net >/dev/null 2>&1
+:; ls -1 test.olix0r.net.tls
+ca-chain.cert.pem
+cert.pem
+private.pem
 ```
