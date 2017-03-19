@@ -2,11 +2,10 @@
 
 set -e
 
+./destroy.sh
+
 (
     cd ca
-    rm -f ./serial* ./index*
-    rm -rf certs newcerts csr private
-
     touch index.txt
     echo 1000 >serial
     mkdir -p certs newcerts csr private
@@ -25,9 +24,6 @@ chmod 444 ca/certs/ca.cert.pem
 
 (
     cd ca/intermediate
-    rm -rf certs crl csr newcerts private
-    rm -f ./index* ./serial*
-
     mkdir certs crl csr newcerts private
     chmod 700 private
     touch index.txt
