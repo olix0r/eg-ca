@@ -7,6 +7,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 svc="$1"
+shift
 
 privkey="ca/intermediate/private/${svc}.key"
 csr="ca/intermediate/csr/${svc}.csr"
@@ -17,6 +18,9 @@ openssl genrsa -out "${privkey}.pem" 2048
 chmod 400 "${privkey}.pem"
 
 export SUBJECT_ALT_NAME="DNS:${svc}"
+for alt in $@ ; do
+    SUBJECT_ALT_NAME="${SUBJECT_ALT_NAME},DNS:${alt}"
+done
 openssl req -config ca/intermediate/openssl.cnf \
     -extensions server_cert -new -subj "/C=US/CN=${svc}" \
     -key "${privkey}.pem" \
