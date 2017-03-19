@@ -34,7 +34,9 @@ chmod 444 ca/certs/ca.cert.pem
 openssl genrsa -out ca/intermediate/private/intermediate.key.pem 4096
 chmod 400 ca/intermediate/private/intermediate.key.pem
 
+export SUBJECT_ALT_NAME=""
 openssl req -config ca/intermediate/openssl.cnf -new -batch \
+        -extensions v3_intermediate_ca \
         -key ca/intermediate/private/intermediate.key.pem \
         -out ca/intermediate/csr/intermediate.csr.pem
 

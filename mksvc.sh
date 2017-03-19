@@ -16,8 +16,9 @@ cachain_pem="ca/intermediate/certs/ca-chain.cert.pem"
 openssl genrsa -out "${privkey}.pem" 2048
 chmod 400 "${privkey}.pem"
 
+export SUBJECT_ALT_NAME="DNS:${svc}"
 openssl req -config ca/intermediate/openssl.cnf \
-    -new -subj "/C=US/CN=${svc}" \
+    -extensions server_cert -new -subj "/C=US/CN=${svc}" \
     -key "${privkey}.pem" \
     -out "${csr}.pem"
 
